@@ -29,7 +29,7 @@ const TotalOrders=()=> {
 
 ### Arguments
 
-Different arguments (and argument lenths) evaluate as a new instance.
+Different arguments (and argument lengths) evaluate as a new instance.
 
 ```js
     useCommonHook(useUser, [1])
