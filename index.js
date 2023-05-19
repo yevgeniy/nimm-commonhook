@@ -1,8 +1,8 @@
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
+
 import React, {
     useState,
-    useEffect,
-    useRef
+    useEffect
 } from "react";
 
 /* exported for testing */
@@ -19,19 +19,27 @@ export class repoobject {
         this.elm = document.createElement("div");
     }
     wire() {
-        ReactDOM.render(
-            React.createElement(() => {
-                const res = this.hook(...this.args);
+        const reactElm = React.createElement(({hook, args, resOut}) => {
+            const res = hook(...args);
 
-                this.res = res;
+            resOut(res);
+            return null;
+        }, {
+            hook:this.hook,
+            args:this.args,
+            resOut:res=> {
+                this.res=res,
                 this.listeners.forEach(fn => fn(res));
-                return null;
-            }, {}),
-            this.elm
-        );
+            }
+        })
+
+        this.root = createRoot(this.elm);
+        this.root.render(reactElm)
+      
+        
     }
     destruct() {
-        ReactDOM.unmountComponentAtNode(this.elm);
+        this.root.unmount();
     }
     isSame(hook, args = []) {
         if (hook !== this.hook) return false;
