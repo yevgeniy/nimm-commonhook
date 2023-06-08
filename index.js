@@ -7,12 +7,9 @@ import React, {
 
 /* exported for testing */
 export class repoobject {
-    args = [];
-    hook = null;
-    listeners = [];
-    elm = null;
-    res = null;
+    
     constructor(hook, args) {
+        this.res = null;
         this.hook = hook;
         this.args = args || [];
         this.listeners = [];
