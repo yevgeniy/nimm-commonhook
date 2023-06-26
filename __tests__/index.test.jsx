@@ -1,18 +1,40 @@
-import React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import useCommonHook, { clearRepos, repoobject } from '../index';
+import useCommonHook, { clearRepos, repoobject, clearMethods } from '../index';
 import { act } from 'react-dom/test-utils';
 
-let c = 0;
+let c = null;
 const Guid = () => {
     return ++c
 }
 
+let mockReactVersion=null;
+jest.mock('react', ()=> {
+  return  {
+    ...jest.requireActual('react'),
+    get version() {
+      console.log("VERSION GETTER", mockReactVersion)
+      return mockReactVersion
+    }
+  }
+})
+
 describe('common hook', () => {
 
+    beforeEach(()=> {
+      mockReactVersion='18.foo.bar';
+      c=0;
+    })
 
-    test('uses same instance of the hook', async () => {
+    test.each`
+      ver
+      ${'17.foo.bar'}
+      ${'18.foo.bar'}
+      ${'20.foo.bar'}
+    `('uses same instance of the hook', async ({ver}) => {
+        mockReactVersion=ver;
+        clearMethods();
+
         const coverHook = () => {
             return 'foo';
         }
@@ -62,74 +84,24 @@ describe('common hook', () => {
 
         /* mount both hooks should render same guid */
         const { container } = render(<Root />)
-        expect(container).toMatchInlineSnapshot(`
-<div>
-  <div
-    class="comp1"
-  >
-    1
-  </div>
-   
-  <div
-    class="comp2"
-  >
-    1
-  </div>
-</div>
-`);
+        expect(container).toMatchSnapshot();
 
         /* updating the good in original hook should update both components to same guid */
         act(() => {
             setter(Guid());
         })
-        expect(container).toMatchInlineSnapshot(`
-<div>
-  <div
-    class="comp1"
-  >
-    2
-  </div>
-   
-  <div
-    class="comp2"
-  >
-    2
-  </div>
-</div>
-`);
+        expect(container).toMatchSnapshot();
 
         /* removing one component and adding one component should
         still render the same guid since there was still an instance of a hook alive */
         act(() => {
             setstate('remove1')
         })
-        expect(container).toMatchInlineSnapshot(`
-<div>
-  <div
-    class="comp1"
-  >
-    2
-  </div>
-</div>
-`);
+        expect(container).toMatchSnapshot();
         act(() => {
             setstate('add1')
         })
-        expect(container).toMatchInlineSnapshot(`
-<div>
-  <div
-    class="comp2"
-  >
-    2
-  </div>
-   
-  <div
-    class="comp1"
-  >
-    2
-  </div>
-</div>
-`);
+        expect(container).toMatchSnapshot();
 
 
         /* removing all the components and adding one should give
@@ -138,11 +110,7 @@ describe('common hook', () => {
         act(() => {
             setstate('remove-all')
         })
-        expect(container).toMatchInlineSnapshot(`
-<div>
-  <div />
-</div>
-`);
+        expect(container).toMatchSnapshot();
 
         await new Promise(res => setTimeout(res, 100))
 
@@ -150,29 +118,13 @@ describe('common hook', () => {
             setstate('add-just-one')
         })
 
-        expect(container).toMatchInlineSnapshot(`
-<div>
-  <div
-    class="comp1"
-  >
-    4
-  </div>
-</div>
-`);
+        expect(container).toMatchSnapshot();
 
         /* changing arguments in a hook should generate a new hook */
         act(() => {
             setstate('change-args')
         })
-        expect(container).toMatchInlineSnapshot(`
-<div>
-  <div
-    class="comp1"
-  >
-    5
-  </div>
-</div>
-`);
+        expect(container).toMatchSnapshot();
 
         clearRepos()
 
