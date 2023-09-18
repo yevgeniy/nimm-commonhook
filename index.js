@@ -1,9 +1,27 @@
+import R from 'react';
 import { createRoot } from 'react-dom/client';
+import {render, unmountComponentAtNode} from 'react-dom';
 
 import React, {
     useState,
     useEffect
 } from "react";
+
+let wireMethod=null;
+let destructMethod=null;
+function newWireMethod(_this) {
+    _this.root = createRoot(_this.elm);
+    _this.root.render(_this.reactElm)
+}
+function oldWireMethod(_this) {
+    render(_this.reactElm, _this.elm);
+}
+function newDestructMethod(_this) {
+    _this.root.unmount();
+}
+function oldDestructMethod(_this) {
+    unmountComponentAtNode(_this.elm);
+}
 
 /* exported for testing */
 export class repoobject {
@@ -14,9 +32,10 @@ export class repoobject {
         this.args = args || [];
         this.listeners = [];
         this.elm = document.createElement("div");
+        this.reactElm = null;
     }
     wire() {
-        const reactElm = React.createElement(({hook, args, resOut}) => {
+        this.reactElm = React.createElement(({hook, args, resOut}) => {
             const res = hook(...args);
 
             resOut(res);
@@ -30,14 +49,25 @@ export class repoobject {
             }
         })
 
-        this.root = createRoot(this.elm);
-        this.root.render(reactElm)
+        if (wireMethod===null) {            
+            /* figure out if this is running old or new react */
+            if (+R.version.split('.')[0] >=18) {
+                wireMethod=newWireMethod
+                destructMethod=newDestructMethod;
+            } else {
+                wireMethod = oldWireMethod;
+                destructMethod=oldDestructMethod;
+            }
+                
+        }
       
-        
+        wireMethod(this)
     }
+
     destruct() {
-        this.root.unmount();
+        destructMethod(this);
     }
+    
     isSame(hook, args = []) {
         if (hook !== this.hook) return false;
 
@@ -65,6 +95,10 @@ export let repos = [];
 export const clearRepos = () => {
     repos.forEach(v => v.destruct());
     repos = [];
+}
+export const clearMethods=()=> {
+    wireMethod=null;
+    destructMethod=null;
 }
 
 function useCommonHook(hook, args = []) {
