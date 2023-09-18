@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`common hook syncrns. hook 1`] = `
+[
+  [
+    null,
+  ],
+  [
+    5,
+  ],
+]
+`;
+
 exports[`common hook uses same instance of the hook 1`] = `
 <div>
   <div
@@ -75,174 +86,6 @@ exports[`common hook uses same instance of the hook 6`] = `
 `;
 
 exports[`common hook uses same instance of the hook 7`] = `
-<div>
-  <div
-    class="comp1"
-  >
-    5
-  </div>
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 8`] = `
-<div>
-  <div
-    class="comp1"
-  >
-    1
-  </div>
-   
-  <div
-    class="comp2"
-  >
-    1
-  </div>
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 9`] = `
-<div>
-  <div
-    class="comp1"
-  >
-    2
-  </div>
-   
-  <div
-    class="comp2"
-  >
-    2
-  </div>
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 10`] = `
-<div>
-  <div
-    class="comp1"
-  >
-    2
-  </div>
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 11`] = `
-<div>
-  <div
-    class="comp2"
-  >
-    2
-  </div>
-   
-  <div
-    class="comp1"
-  >
-    2
-  </div>
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 12`] = `
-<div>
-  <div />
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 13`] = `
-<div>
-  <div
-    class="comp1"
-  >
-    4
-  </div>
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 14`] = `
-<div>
-  <div
-    class="comp1"
-  >
-    5
-  </div>
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 15`] = `
-<div>
-  <div
-    class="comp1"
-  >
-    1
-  </div>
-   
-  <div
-    class="comp2"
-  >
-    1
-  </div>
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 16`] = `
-<div>
-  <div
-    class="comp1"
-  >
-    2
-  </div>
-   
-  <div
-    class="comp2"
-  >
-    2
-  </div>
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 17`] = `
-<div>
-  <div
-    class="comp1"
-  >
-    2
-  </div>
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 18`] = `
-<div>
-  <div
-    class="comp2"
-  >
-    2
-  </div>
-   
-  <div
-    class="comp1"
-  >
-    2
-  </div>
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 19`] = `
-<div>
-  <div />
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 20`] = `
-<div>
-  <div
-    class="comp1"
-  >
-    4
-  </div>
-</div>
-`;
-
-exports[`common hook uses same instance of the hook 21`] = `
 <div>
   <div
     class="comp1"

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import useCommonHook, { clearRepos, repoobject, clearMethods } from '../index';
+import useCommonHook, { clearRepos, repoobject } from '../index';
 import { act } from 'react-dom/test-utils';
 
 let c = null;
@@ -8,32 +8,12 @@ const Guid = () => {
     return ++c
 }
 
-let mockReactVersion=null;
-jest.mock('react', ()=> {
-  return  {
-    ...jest.requireActual('react'),
-    get version() {
-      console.log("VERSION GETTER", mockReactVersion)
-      return mockReactVersion
-    }
-  }
-})
-
 describe('common hook', () => {
-
     beforeEach(()=> {
-      mockReactVersion='18.foo.bar';
       c=0;
     })
 
-    test.each`
-      ver
-      ${'17.foo.bar'}
-      ${'18.foo.bar'}
-      ${'20.foo.bar'}
-    `('uses same instance of the hook', async ({ver}) => {
-        mockReactVersion=ver;
-        clearMethods();
+    test('uses same instance of the hook', async () => {
 
         const coverHook = () => {
             return 'foo';
@@ -160,6 +140,24 @@ describe('common hook', () => {
         expect(o.listeners).toEqual(['a', 'b', 'c', 'd'])
         c();
         expect(o.listeners).toEqual(['a', 'b', 'c'])
+    })
+    test("syncrns. hook", async()=> {
+        const usehook=()=> {
+            return 5;
+        }
+
+        const fn=jest.fn();
+        const Comp=()=> {
+            const res=useCommonHook(usehook);
+
+            fn(res);
+        }
+
+        render(<Comp />)
+
+        await new Promise(res=>setTimeout(res,300));
+
+        expect(fn.mock.calls).toMatchSnapshot();
     })
 
 })

@@ -1,27 +1,10 @@
-import R from 'react';
 import { createRoot } from 'react-dom/client';
-import {render, unmountComponentAtNode} from 'react-dom';
 
 import React, {
     useState,
-    useEffect
+    useEffect,
+    useMemo
 } from "react";
-
-let wireMethod=null;
-let destructMethod=null;
-function newWireMethod(_this) {
-    _this.root = createRoot(_this.elm);
-    _this.root.render(_this.reactElm)
-}
-function oldWireMethod(_this) {
-    render(_this.reactElm, _this.elm);
-}
-function newDestructMethod(_this) {
-    _this.root.unmount();
-}
-function oldDestructMethod(_this) {
-    unmountComponentAtNode(_this.elm);
-}
 
 /* exported for testing */
 export class repoobject {
@@ -32,10 +15,9 @@ export class repoobject {
         this.args = args || [];
         this.listeners = [];
         this.elm = document.createElement("div");
-        this.reactElm = null;
     }
     wire() {
-        this.reactElm = React.createElement(({hook, args, resOut}) => {
+        const reactElm = React.createElement(({hook, args, resOut}) => {
             const res = hook(...args);
 
             resOut(res);
@@ -49,25 +31,12 @@ export class repoobject {
             }
         })
 
-        if (wireMethod===null) {            
-            /* figure out if this is running old or new react */
-            if (+R.version.split('.')[0] >=18) {
-                wireMethod=newWireMethod
-                destructMethod=newDestructMethod;
-            } else {
-                wireMethod = oldWireMethod;
-                destructMethod=oldDestructMethod;
-            }
-                
-        }
-      
-        wireMethod(this)
+        this.root = createRoot(this.elm);
+        this.root.render(reactElm);
     }
-
     destruct() {
-        destructMethod(this);
+        this.root.unmount();
     }
-    
     isSame(hook, args = []) {
         if (hook !== this.hook) return false;
 
@@ -96,10 +65,6 @@ export const clearRepos = () => {
     repos.forEach(v => v.destruct());
     repos = [];
 }
-export const clearMethods=()=> {
-    wireMethod=null;
-    destructMethod=null;
-}
 
 function useCommonHook(hook, args = []) {
     const [, setrel] = useState(+new Date());
@@ -111,14 +76,18 @@ function useCommonHook(hook, args = []) {
         commonrepo.wire();
     }
 
-    useEffect(() => {
+    const clear = useMemo(()=> {
         const c = commonrepo.attach(() => {
             setrel(+new Date());
         });
 
-        return () => {
-            c();
+        return c;
+    },[commonrepo])
 
+    useEffect(() => {
+
+        return () => {
+            clear();
             if (!commonrepo.listeners.length) {
                 commonrepo.destruct();
                 repos = repos.filter(v => v !== commonrepo);
