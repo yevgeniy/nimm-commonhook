@@ -3,7 +3,7 @@
 `nimm-commonhook` enables components to subscribe to a single instance of a hook. As long as at least one component maintains a subscription, the same hook instance is reused across all subscribing components. This provides a lightweight, hook-based alternative to state management solutions like Redux.
 
 ```js
-import { useInstance } from 'nimm-commonhook';
+import useInstance from 'nimm-commonhook';
 import { useState, useEffect } from 'react';
 import CartService from './some-cart-service';
 
