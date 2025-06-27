@@ -1,6 +1,6 @@
 {
   "name": "nimm-commonhook",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "common hook",
   "main": "index.js",
   "author": "gene andreyev <yandreyev326@gmail.com>",
