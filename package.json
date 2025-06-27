@@ -3,7 +3,7 @@
   "version": "2.0.1",
   "description": "common hook",
   "main": "index.js",
-  "author": "gene andreyev <gene_andreyev@intuit.com>",
+  "author": "gene andreyev <yandreyev326@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@babel/preset-env": "^7.20.2",
